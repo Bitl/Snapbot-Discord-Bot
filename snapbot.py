@@ -44,16 +44,25 @@ game_list = ["Team Fortress 2", "Garry's Mod", "Portal", "Portal 2", "Left 4 Dea
 "Pac-Man", "Mrs. Pac-Man", "Sonic the Hedgehog", "Reflex Arena", "Overwatch", "League Of Legends", "Dota 2", "Halo Combat Evolved", "Halo Custom Edition", "Halo Online", 
 "ElDewrito", "Team Fortress 2 Classic", "Synergy", "FIREFIGHT RELOADED", "Unreal Tournament", "GZDOOM", "ZDOOM", "GLQuake", "WinQuake", "Spacewar!"]
 
+data = {}
+config = {}
+
+with open('sayings.json') as json_data_file:
+     data = json.load(json_data_file)
+	 
+with open('config.json') as json_config_file:
+     config = json.load(json_config_file)
+	 
 #global vars.
-gamermode = True
+gamermode_config = config["gamermode"]
+
+if gamermode_config == "True":
+     gamermode = True
+else:
+     gamermode = False
 
 #number of seconds that we are idle for when typing
-idletime = 1.5
-
-data = {}
-
-with open('data.json') as json_data_file:
-     data = json.load(json_data_file)
+idletime = float(config["idletime"])
         
 #ready event.
 @bot.event
@@ -90,16 +99,11 @@ async def change_game():
 #event on message.
 @bot.event
 async def on_message(message):
-  await message_event_func(message)
-
-#message function
-async def message_event_func(message):
   #make sure we don't mention ourselves.
   if message.author == bot.user:
     return
 
   splitcontent = message.content.split()
-  
   for i in splitcontent:
      if i in data:
          await doresponsepattern(message, message.content, i)
